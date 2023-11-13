@@ -32,7 +32,7 @@ async function main(){
     		height:1080,
     	});
     
-    	await page.goto('https://wellsfargo.com', {waitUntil: 'networkidle0'});
+    	await page.goto('https://', {waitUntil: 'networkidle0'});
     
     	await page.waitForTimeout(getRandomInt(1,12000));
     
