@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer-extra');
 const StealthPlutin = require('puppeteer-extra-plugin-stealth');
+require('dotenv').config()
 
 const start = Date.now();
 
@@ -32,13 +33,13 @@ async function main(){
     		height:1080,
     	});
     
-    	await page.goto('https://', {waitUntil: 'networkidle0'});
+    	await page.goto(process.env.ROWDY_URL, {waitUntil: 'networkidle0'});
     
     	await page.waitForTimeout(getRandomInt(1,12000));
     
-    	await page.type('#userid', '', {delay:getRandomInt(2,10)});
+    	await page.type('#userid', process.env.ROWDY_USERNAME, {delay:getRandomInt(2,10)});
 		await page.keyboard.press('Tab');
-    	await page.type('#password', '',{delay:getRandomInt(2,11)});
+    	await page.type('#password', process.env.ROWDY_PASSWORD,{delay:getRandomInt(2,11)});
     	await page.keyboard.press('Enter');
     	await page.screenshot({path: `wf_login_${start}.png`});
     	
