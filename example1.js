@@ -3,7 +3,7 @@ const StealthPlutin = require('puppeteer-extra-plugin-stealth');
 const path = require('path');
 const fs = require('fs');
 
-require('dotenv').config()
+require('dotenv').config();
 
 const start = Date.now();
 
@@ -59,7 +59,7 @@ async function main(){
 			console.error(`Error creating folder: ${err.message}`);
 			return;
 		}
-	}
+	})
 	
 	console.log('screenshot pre-login');
     	await page.screenshot({path: `output/wf_login_${start}.png`});

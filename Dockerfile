@@ -1,9 +1,8 @@
-FROM node:20-alpine
-RUN apk add xvfb xvfb-run chromium
-
+FROM alpine:latest
+RUN apk --no-cache add nodejs npm xvfb xvfb-run chromium
 WORKDIR /usr/app
+
 COPY . /usr/app
+RUN npm install puppeteer-extra puppeteer-extra-plugin-stealth
 
-RUN npm install
-
-CMD ["xvfb-run","node","example1.js"]
+ENTRYPOINT ["sh","-c","xvfb-run --server-args='-screen 0 1920x1080x24' node example1.js"]
