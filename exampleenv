@@ -1,4 +1,5 @@
 # save this file as '.env' ,environment variables
 ROWDY_USERNAME=<your username>
 ROWDY_PASSWORD=<your password>
-ROWDY_URL=<your bank>
+ROWDY_URL=<your target form>
+ROWDY_TARGET=<target shortname>
