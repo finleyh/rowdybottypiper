@@ -11,6 +11,5 @@ sudo docker run --cpus=2 -m 2048m -v /your/local/dir/for/output:/usr/app/output 
 sudo docker ps --filter 'status=running'
 
 
-
 ### stopping execution
 sudo docker stop $(sudo docker ps -q)
