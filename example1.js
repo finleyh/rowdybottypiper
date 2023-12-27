@@ -21,37 +21,8 @@ function getRandomInt(min, max){
 	return Math.floor(Math.random() * (max-min) + min);
 }
 
-function start_browser(){
-	console.log('starting browser');
-	const browser = await puppeteer.launch({
-		headless:false,
-		defaultViewport: null,
-		args: ['--start-maximized', '--disable-infobars','--disable-extensions','--no-sandbox'],
-		ignoreDefaultArgs: ['--enable-automation'],
-		executablePath: '/usr/bin/chromium-browser'
-	});
-	return browser	
-}
 
-
-function load_page(browser){
-	console.log('Load_page() started');
-    	const page = await browser.newPage();
-	try{
-    		await page.setViewport({
-    			width: VIEWPORT_Y,
-    			height: VIEWPORT_X,
-    		});
-    		await page.goto(process.env.ROWDY_URL, {waitUntil: 'networkidle0'});
-	}
-	catch (e) {
-		console.log(e);
-	}
-	return page
-}
-
-
-function screen_shot(name,page){
+async function screen_shot(name,page){
 	console.log('creating output folder');
 	if (!fs.existsSync('output')){
     		fs.mkdirSync('output', {recursive:true}, (err) => {
@@ -62,40 +33,51 @@ function screen_shot(name,page){
 	}
 	console.log(`making screenshot ${process.env.ROWDY_TARGET}_${name}_${start}.png`);
     	await page.screenshot({path: `output/${process.env.ROWDY_TARGET}_${name}_${start}.png`});
-    	await page.waitForNavigation();
 }
 
 
-function start_activity(browser,page){
-	console.log(`Filling in form data with username ${process.env.ROWDY_USERNAME} and affiliated password!`);	
-
-	screen_shot('preform',page);
-
-    	await page.type(process.env.ROWDY_USERNAME_FIELD, process.env.ROWDY_USERNAME_VALUE, {delay:getRandomInt(TYPE_WAIT_MIN,TYPE_WAIT_MAX)});
-	await page.keyboard.press('Tab');
-    	await page.type(process.env.ROWDY_PASSWORD_FIELD, process.env.ROWDY_PASSWORD_VALUE,{delay:getRandomInt(TYPE_WAIT_MIN,TYPE_WAIT_MAX)});
-    	await page.keyboard.press('Enter');
-
-	screen_shot('postform',page);
-	    
-	return;
-}
-
-
-function main(){
+async function main(){
 
 	console.log('started main');
+	console.log('starting browser');
 
-	browser = start_browser();
+	const browser = await puppeteer.launch({
+		headless:false,
+		defaultViewport: null,
+		args: ['--start-maximized', '--disable-infobars','--disable-extensions','--no-sandbox'],
+		ignoreDefaultArgs: ['--enable-automation'],
+		executablePath: '/usr/bin/chromium-browser'
+	});
+    	const page = await browser.newPage();
+
+    	console.log('Load_page() started');
+	try{
+    		await page.setViewport({
+    			width: VIEWPORT_Y,
+    			height: VIEWPORT_X,
+    		});
+    		await page.goto(process.env.ROWDY_URL, {waitUntil: 'networkidle0'});
+	}
+	catch (e) {
+		console.log(e);
+	}
     	await page.waitForTimeout(getRandomInt(WAIT_MIN,WAIT_MAX));
 
-   	page = load_page(browser);
-    	await page.waitForTimeout(getRandomInt(WAIT_MIN,WAIT_MAX));
 
-	start_activity(browser,page);
-    	await page.waitForTimeout(getRandomInt(WAIT_MIN,WAIT_MAX));
+	console.log(`Filling in form data with username ${process.env.ROWDY_USERNAME} and affiliated password!`);	
+	
+	await screen_shot('preform',page);
+	//await page.type(process.env.ROWDY_USERNAME_FIELD, process.env.ROWDY_USERNAME_VALUE, {delay:getRandomInt(TYPE_WAIT_MIN,TYPE_WAIT_MAX)});
+	await page.type('#userid', process.env.ROWDY_USERNAME_VALUE, {delay:getRandomInt(TYPE_WAIT_MIN,TYPE_WAIT_MAX)});
+	await page.keyboard.press('Tab');
+    	//await page.type(process.env.ROWDY_PASSWORD_FIELD, process.env.ROWDY_PASSWORD_VALUE,{delay:getRandomInt(TYPE_WAIT_MIN,TYPE_WAIT_MAX)});
+    	await page.type('#password', process.env.ROWDY_PASSWORD_VALUE,{delay:getRandomInt(TYPE_WAIT_MIN,TYPE_WAIT_MAX)});
+    	await page.keyboard.press('Enter');
 
-	browser.close();
+    	await page.waitForNavigation();
+	await screen_shot('postform',page);
+    	await page.waitForTimeout(getRandomInt(WAIT_MIN,WAIT_MAX));
+	await browser.close();
 
    	console.log('end main');	
 }

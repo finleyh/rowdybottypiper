@@ -8,7 +8,7 @@ sudo docker build -t baggins .
 sudo docker run --cpus=2 -m 2048m -v /your/local/dir/for/output:/usr/app/output -d baggins
 
 ### monitoring execution
-sudo docker ps --filter up
+sudo docker ps --filter 'status=running'
 
 
 
