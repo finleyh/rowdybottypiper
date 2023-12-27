@@ -75,8 +75,8 @@ async function main(){
     	await page.keyboard.press('Enter');
 
     	await page.waitForNavigation();
-	await screen_shot('postform',page);
     	await page.waitForTimeout(getRandomInt(WAIT_MIN,WAIT_MAX));
+	await screen_shot('postform',page);
 	await browser.close();
 
    	console.log('end main');	
